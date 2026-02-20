@@ -1,0 +1,187 @@
+---
+title: "Day1"
+author: "Pietro Franceschi"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## R basics
+
+Creating variables and data types
+
+```{r}
+# to create a variable you need a name and a content ...
+my_first_var <- 6
+```
+
+Important: variable names cannot start with a number, and is better if they are not containing spaces ... also avoid reserved characterds (e.g. +, -, :)
+
+
+What are the different types of variables(objects) ypu can create in R
+
+* numbers (different size)
+* words/character vectors 
+* boolean  (yes/no, true/false)
+* muldimensional versions of all the previous types (vectors, matrices, arrays)
+* multimensional objects that are made of different basic types (e.g excel tables)
+  * containing objects of the same length (data.frames aka complete excel tables)
+  * containig bjects without any constrain on their size > lists
+
+```{r}
+a_number <- 4
+a_word <- "pippo"   ## all strings have to be surrounded by "
+a_boolean <- TRUE
+```
+
+In terms of multimensional ...
+
+If you want to create a mumtidimensional object joining the individual elements you need a **function** which will be able to combine the individual elements
+
+A **function** is a machine which takes something as imput and produces something as output.
+Everything in R is either one basic object or a function- Functions in R are colled by name and are almost every time characterized by the presence of brackets which surround the function inputs
+
+```{r}
+a_vector <- c(1,2,3) ## c stands for concatenate
+```
+
+To access the individual elements of multimensional objects we use square brackets []
+
+```{r}
+a_vector[2]
+## is the second element of my unidimensional vector
+```
+
+With the coordinates you can extract the content, but also chage it dynamically
+
+```{r}
+a_vector[2] <- 7
+```
+
+Coordinates in R starts from 1
+
+
+I was mentioning the fact that all the elements of a vector should be of the same type. What would in your opinion happen if I try to repalce one element of my vector with a word?
+
+```{r}
+a_vector[2] <- "7"
+```
+
+If I put on a verctor an object of a type that is more "general" of what is contained in the vector, R will "cast" all the elements of the vector to the most general type
+
+
+If I want to create a matrix, then I have to provide the numbers to a function called *constructor* which will turn the set of numbers into a matrix form. The constructor of a matrix in R is called `matrix`
+
+```{r}
+## first I create the object which contains the elements of the matrix
+nine_numbers <- c(1,2,3,4,5,6,7,8,9)
+
+## I throw it in the constructor to arrange the elements into a squared form
+a_matrix <- matrix(nine_numbers)
+
+a_matrix
+```
+This is not what we want because we are not seying to the `matrix` constructor what are the dimension of the matrix I want. To do this we have to rely on *function arguments* that are ways to specify how  a function will behave on the inputs
+
+```{r}
+a_matrix <- matrix(nine_numbers,3)
+
+a_matrix
+```
+
+The arguments are the way you use to tweak the behavior of the function. They are specified inside the parenthesis of the function call. What are the arguments which are available for a given function can be found in the function help.
+In the function call the arguments can be specified either by name or by position.
+
+To avoid the need of specifying always all the arguments, the functions are designed to have default values for most of the arguments
+
+
+### Accessing Multimensional Objects
+
+To access the elements of a multidimensional object you can use the "coordinates" or the names if they are available
+
+Let's look to a one dimensional example
+
+```{r}
+## I'm adding names to my a_vector object
+names(a_vector) <- c("first_pos","second_pos","third_pos")
+```
+
+```{r}
+a_vector[1]
+a_vector["first_pos"]
+```
+
+In the case of two or three dimensional objects the coordinates are growing inside the brackets
+
+```{r}
+a_matrix[1,1] ## is the 1,1 element
+a_matrix[,1] ## is the first column
+a_matrix[1,] ## is the 3first row
+```
+
+Non uniform 2d object which behaves as excel tables are created by the function `data.frame`. To construct them you nees to provide inside the cinstructor the vectors of the columns you would like to include in the table
+
+```{r}
+a_data_frame <- data.frame(class = c("tr","tr","ctr","ctr"),
+                           intensity = c(1,2,5,6))
+a_data_frame
+```
+
+## Plotting
+
+We have the geneal ideas about objects and functions ... let's try to move on plotting tabular data by useng ggplot.
+
+GGplot is a package which relies on the basic R plotting routines but it is optimized to plot tabular data.
+
+To use it we need: 
+* the ggplot package
+* a dataset
+
+ggplot can be installed as part of a metapaclage called `tidyverse`. It contains a full set of utilities to perform `data carpentry`
+
+```{r}
+library(tidyverse)
+```
+
+As a n example dataset we use one table that is provided already inside R. It contains some information flowers
+
+```{r}
+## I load the dataset by using the function data of R
+data("iris")
+```
+
+The data contains four measuremtns of physical dimension of 150 iris flowers of different species.
+
+If you get a dataset like this the first thing you want to do is to give a look to the properties plotting them ...
+
+```{r}
+ggplot(iris) +
+  geom_point(aes(x = Petal.Width, y = Petal.Length, col =Species))
+```
+
+
+```{r}
+ggplot(iris) +
+  geom_point(aes(x = Species, y = Petal.Length, col =Species),
+             position = position_jitter(width = 0.3)) + 
+  geom_violin(aes(x = Species, y = Petal.Length, fill =Species), alpha = 0.5) +
+  scale_color_brewer(palette = "Set1") + 
+  scale_fill_brewer(palette = "Set1") + 
+  theme_bw()
+```
+
+
+Something for you:
+
+* make a violin/box plotm of all the four properties of the flowers
+* try to add a "regression" line in the Sepal.Length vs Sepal.Width plot asking chat gpt or gemini on how to do it.
+
+
+
+
+
+

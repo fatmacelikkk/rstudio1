@@ -1,0 +1,188 @@
+---
+title: "Untitled"
+author: "Pietro Franceschi"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## More on plotting
+
+```{r}
+library(tidyverse)
+```
+
+I get my iris data object and I want to make boxplots of all the four properties, making the plot nice and also saving it to prepare it for publication
+
+```{r}
+## load the data
+data(iris)
+```
+
+
+Just to make our life more complex, we tweak the names of the columns to make them less plain ...
+
+```{r}
+colnames(iris) <- c('sepal length', "sepal width" ,"petal length", "petal width","species" )
+```
+
+
+
+```{r}
+plot1 <- ggplot(iris, aes(x = species, y = `sepal length`)) + 
+  geom_point(aes(col = species), position = position_jitter(width = 0.1)) + 
+  geom_boxplot(aes(fill = species), alpha = 0.5) + 
+  scale_color_manual(values = c("#00F5FF","#4A4E69","#22223B"), name = "Genotype") + 
+  scale_fill_manual(values = c("#00F5FF","#4A4E69","#22223B"),, name = "Genotype") + 
+  xlab("") + ylab("Sepal Length") + 
+  theme_bw() +
+  theme(aspect.ratio = 0.5, legend.position = "bottom")
+
+plot1
+```
+
+```{r}
+ggsave(plot = plot1, filename = "my_first_plot.png", units = "cm", width = 10, height = 7, scale = 1.5, dpi = 600)
+```
+
+
+```{r}
+plot2 <- ggplot(iris, aes(x = species, y = `sepal width`)) + 
+  geom_point(aes(col = species), position = position_jitter(width = 0.1)) + 
+  geom_boxplot(aes(fill = species), alpha = 0.5) + 
+  scale_color_manual(values = c("#00F5FF","#4A4E69","#22223B"), name = "Genotype") + 
+  scale_fill_manual(values = c("#00F5FF","#4A4E69","#22223B"),, name = "Genotype") + 
+  xlab("") + ylab("Sepal Length") + 
+  theme_bw() +
+  theme(aspect.ratio = 0.5, legend.position = "none")
+
+plot2
+```
+
+
+Up to now if I want to plot boxplots of all my flower properties I have to produce four independent plots and arrange tham in a single figure either outside R or inside it by using (for example) `cowplot`
+
+
+```{r}
+library(cowplot)
+
+joint_plot <- plot_grid(plot1, plot2, labels = c('A', 'B'), label_size = 12)
+joint_plot
+```
+
+A more clever solution can be found by changing the structure of our dataframe moving from long to wide structure.
+
+We do it by usinmg a specific function which is available within `tidyverse`
+
+```{r}
+iris_long <- pivot_longer(data = iris, -species)
+iris_long
+```
+
+```{r}
+ggplot(iris_long, aes(x = species, y = value)) +
+  geom_point(aes(col = species), position = position_jitter(width = 0.1)) + 
+  geom_boxplot(aes(fill = species), alpha = 0.5) + 
+  scale_color_manual(values = c("#00F5FF","#4A4E69","#22223B"), name = "Genotype") + 
+  scale_fill_manual(values = c("#00F5FF","#4A4E69","#22223B"), name = "Genotype") + 
+  xlab("") + ylab("Sepal Length") + 
+  facet_wrap(~name, scales = "free_y") + 
+  theme_bw() +
+  theme(aspect.ratio = 0.5)
+```
+
+How can we override the default ordering of categorical variables. Remember that by default R follws alphabetic ordering for categories
+
+What R (and all other programming languages) is doing is transforming a vector of "words" into a vector of numbers. 
+
+If you have categorical variables a clever idea would be to associate at each unique class one specific integer number
+
+Inb R it exist a specific data type called `factor` that is exactly designed like this. The factor is created as usual by a specific constructor called `factor`.
+
+```{r}
+iris$species
+```
+
+Is already a factor with three levels and the first one is "setosa". If I want to have versicolor as reference I have to explicitly transform my column in a factor where the level 1 is versicolor
+
+```{r}
+iris$species <- factor(iris$species, levels = c("versicolor", "setosa", "virginica"), labels = c("vers","set","virg"))
+```
+
+
+## Spmeting for you
+* get the `mpg` dataset
+* arrange a complete and convincing graphical representation which shows how the hwy depends on disp as a function of the class
+* to make the plot informative, the class category should be reasonably organised
+
+
+The first thing I would do is to try to find a reasonable "order" among the car classess
+
+```{r}
+ggplot(mpg) + 
+  geom_point(aes(x = class, y = displ, colour = manufacturer), position = position_jitter(width = 0.2, height = 0)) +
+  theme_bw()
+```
+
+Let's manually adjust the class column to have an order that makes somehow sense according to the "average" diplacement per class
+
+```{r}
+mpg$class <- factor(mpg$class, levels = c("subcompact", "compact", "midsize", 
+                                          "minivan", "suv","pickup", "2seater"))
+```
+
+
+```{r}
+ggplot(mpg) + 
+  geom_point(aes(x = class, y = hwy), position = position_jitter(width = 0.2, height = 0)) +
+  theme_bw()
+```
+
+
+```{r}
+my_palette <- c(
+  # Green Trio
+  "midsize"   = "#2D6A4F",
+  "compact"     = "#74C69D",
+  "subcompact"   = "#D8F3DC",
+  
+ "minivan"  = "#005F73",
+  # Red Duo
+  "suv"      = "#9B2226",
+  "pickup"    = "#EE6055",
+  
+  # Outliers
+  "2seater" = "#E9D8A6"
+)
+```
+
+
+```{r}
+ggplot(mpg) + 
+  geom_point(aes(x = class, y = hwy, fill = class), 
+             position = position_jitter(width = 0.2, height = 0), pch = 21) +
+  scale_fill_manual(values = my_palette[levels(mpg$class)]) + 
+  theme_bw()
+```
+
+Now we do the correlation plot
+
+
+```{r}
+ggplot(mpg) +
+  geom_point(aes(x = displ, y = cty, fill = class), pch = 21) + 
+  geom_smooth(aes(x = displ, y = cty, col = class), method = "lm", 
+              , formula =  "y ~ poly(x,2)", se = FALSE) + 
+  scale_fill_manual(values = my_palette[levels(mpg$class)]) + 
+  scale_color_manual(values = my_palette[levels(mpg$class)]) +
+  theme_bw() + 
+  theme(aspect.ratio = 1)
+```
+
+
+
+
+
