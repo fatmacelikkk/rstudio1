@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 install.packages("tidyverse")
 library("tidyverse")
 {r}
+df <- read_tsv("forbes.tsv")
 data("forbes")
 top3 <- forbes %>%
 group_by(country) %>%
@@ -39,11 +40,11 @@ summary(model)
 cor(df$sales, df$marketvalue)
 theme_bw() + 
 theme(aspect.ratio = 1)
-ggplot(df, aes(x = profit, y = assets)) +
+ggplot(df, aes(x = profits, y = assets)) +
   geom_point(alpha = 0.6) +               
   geom_smooth(method = "lm", se = TRUE, color = "red") + 
   theme_bw() +                             
-  labs(title = "Relation between profit and sales",
+  labs(title = "Relation between profits and sales",
        subtitle = "Detection with 95% confidence interval")
-model <- lm(sales ~ profit + assets + marketvalue, data = df)
+model <- lm(sales ~ profits + assets + marketvalue, data = df)
 summary(model)
