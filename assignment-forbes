@@ -9,12 +9,11 @@ install.packages("tidyverse")
 library("tidyverse")
 {r}
 df <- read_tsv("forbes.tsv")
-read_tsv("C:/dosya/yolu/forbes.tsv")
 data("forbes")
 top3 <- forbes %>%
 group_by(country) %>%
 arrange(desc(sales)) %>% 
-slice_max(order_by = value, n = 3, with_ties = FALSE) %>% 
+slice_max(order_by = sales, n = 3, with_ties = FALSE) %>% 
 ungroup()
 ggplot(top3, aes(x = country, y = sales)) + fill=category))+ 
 scale_fill_brewer(palette = "Set3") +
