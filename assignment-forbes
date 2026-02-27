@@ -14,7 +14,7 @@ data("forbes")
 top3 <- forbes %>%
 group_by(country) %>%
 arrange(desc(sales)) %>% 
-slice_head(n=3) %>% 
+slice_max(order_by = value, n = 3, with_ties = FALSE) %>% 
 ungroup()
 ggplot(top3, aes(x = country, y = sales)) + fill=category))+ 
 scale_fill_brewer(palette = "Set3") +
