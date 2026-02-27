@@ -1,3 +1,10 @@
+title: "Assignment"
+author: "Fatma"
+date:"2026-02-27"
+output: html_document
+{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+{r}
 install.packages("tidyverse")
 library("tidyverse")
 {r}
@@ -19,7 +26,7 @@ theme(
             strip.text = element_text(face="bold")
 )+
 labs(title = "top3 companies by sales in each country)
-ggplot(forbes) +
+ggplot(top3) +
   geom_point(df, aes(x = sales, y =marketvalue , color = country)) +
   geom_smooth(aes(x = sales, y = marketvalue, col = country), method = "lm", 
    , formula =  "y ~ poly(x,2)", se = FALSE) + 
@@ -40,4 +47,4 @@ ggplot(df, aes(x = profit, y = assets)) +
        subtitle = "Detection with 95% confidence interval")
 model <- lm(sales ~ profit + assets + marketvalue, data = df)
 summary(model)
-saveRDS(forbes, file = "assignment-forbes.Rdm")
+saveRDS(top3, file = "assignment-forbes.Rdm")
