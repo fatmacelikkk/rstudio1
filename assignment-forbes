@@ -36,7 +36,7 @@ labs(title = "Scatterplot of sales vs marketvalue",
      x = "sales",
      y = "market")
 model <- lm(marketvalue ~ sales, data = df)
-summary(model)
+summary(model1)
 cor(df$sales, df$marketvalue)
 theme_bw() + 
 theme(aspect.ratio = 1)
@@ -47,4 +47,4 @@ ggplot(df, aes(x = profits, y = assets)) +
   labs(title = "Relation between profits and sales",
        subtitle = "Detection with 95% confidence interval")
 model <- lm(sales ~ profits + assets + marketvalue, data = df)
-summary(model)
+summary(model2)
