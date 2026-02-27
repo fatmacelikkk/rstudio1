@@ -40,4 +40,4 @@ ggplot(df, aes(x = profit, y = assets)) +
        subtitle = "Detection with 95% confidence interval")
 model <- lm(sales ~ profit + assets + marketvalue, data = df)
 summary(model)
-saveRDS(my_model, file = "assignment-forbes.Rdm")
+saveRDS(forbes, file = "assignment-forbes.Rdm")
