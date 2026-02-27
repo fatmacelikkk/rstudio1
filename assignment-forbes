@@ -9,6 +9,7 @@ install.packages("tidyverse")
 library("tidyverse")
 {r}
 df <- read_tsv("forbes.tsv")
+read_tsv("C:/dosya/yolu/forbes.tsv")
 data("forbes")
 top3 <- forbes %>%
 group_by(country) %>%
