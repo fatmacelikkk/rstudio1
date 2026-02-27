@@ -1,0 +1,42 @@
+install.packages("tidyverse")
+library("tidyverse")
+{r}
+data("forbes")
+top3 <- forbes %>%
+group_by(country) %>%
+arrange(desc(sales)) %>% 
+slice_head(n=3) %>% 
+ungroup()
+ggplot(top3, aes(x = country, y = sales)) + fill=category))+ 
+scale_fill_brewer(palette = "Set3") +
+geom_violin(alpha=0.7, color= "lightblue") + 
+geom_boxplot(width = 0.1, fill="white", outlier.shape =NA) + 
+facet_wrap(~country, scales ="free", ncol=3) + 
+theme_bw(base_size=14) +
+theme(
+             legend.position="bottom",
+             axis.text.x=element_blank(),
+            strip.text = element_text(face="bold")
+)+
+labs(title = "top3 companies by sales in each country)
+ggplot(forbes) +
+  geom_point(df, aes(x = sales, y =marketvalue , color = country)) +
+  geom_smooth(aes(x = sales, y = marketvalue, col = country), method = "lm", 
+   , formula =  "y ~ poly(x,2)", se = FALSE) + 
+  theme_bw()
+labs(title = "Scatterplot of sales vs marketvalue",
+     x = "sales",
+     y = "market")
+model <- lm(marketvalue ~ sales, data = df)
+summary(model)
+cor(df$sales, df$marketvalue)
+theme_bw() + 
+theme(aspect.ratio = 1)
+ggplot(df, aes(x = profit, y = assets)) +
+  geom_point(alpha = 0.6) +               
+  geom_smooth(method = "lm", se = TRUE, color = "red") + 
+  theme_bw() +                             
+  labs(title = "Relation between profit and sales",
+       subtitle = "Detection with 95% confidence interval")
+model <- lm(sales ~ profit + assets + marketvalue, data = df)
+summary(model)
