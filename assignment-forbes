@@ -1,6 +1,6 @@
 title: "Assignment"
 author: "Fatma"
-date:"2026-02-27"
+date: "2026-02-27"
 output: html_document
 {r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -15,7 +15,8 @@ group_by(country) %>%
 arrange(desc(sales)) %>% 
 slice_max(order_by = sales, n = 3, with_ties = FALSE) %>% 
 ungroup()
-ggplot(top3, aes(x = country, y = sales)) + fill=category))+ 
+ggplot(top3, aes(x = country, y = sales)) + fill=category)) + 
+   geom_point() +
 scale_fill_brewer(palette = "Set3") +
 geom_violin(alpha=0.7, color= "lightblue") + 
 geom_boxplot(width = 0.1, fill="white", outlier.shape =NA) + 
@@ -35,7 +36,7 @@ ggplot(top3) +
 labs(title = "Scatterplot of sales vs marketvalue",
      x = "sales",
      y = "market")
-model <- lm(marketvalue ~ sales, data = df)
+model1 <- lm(marketvalue ~ sales, data = df)
 summary(model1)
 cor(df$sales, df$marketvalue)
 theme_bw() + 
@@ -46,5 +47,5 @@ ggplot(df, aes(x = profits, y = assets)) +
   theme_bw() +                             
   labs(title = "Relation between profits and sales",
        subtitle = "Detection with 95% confidence interval")
-model <- lm(sales ~ profits + assets + marketvalue, data = df)
+model2 <- lm(sales ~ profits + assets + marketvalue, data = df)
 summary(model2)
